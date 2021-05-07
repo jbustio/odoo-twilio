@@ -21,7 +21,6 @@ class TwilioApikey(models.Model):
         vals['secret'] = key.secret
         return super(TwilioApikey, self).create(vals)
 
-    @api.multi
     def write(self, vals):
         if "name" in vals:
             for key in self:
@@ -29,7 +28,6 @@ class TwilioApikey(models.Model):
                 client.keys(key.sid).update(friendly_name=vals['name'])
         return super(TwilioApikey, self).write(vals)
 
-    @api.multi
     def unlink(self):
         for key in self:
             client = self.env.user.get_twilio_client()

@@ -22,9 +22,11 @@ class ResCompany(models.Model):
     twilio_number_id = fields.Many2one(
         'twilio.phone.number', string="Default Twilio Number")
 
+ 
     balance_account = fields.Char(
         string="Account Balance", compute='_compute_balance_twilio')
 
+    @api.depends('twilio_account_sid','twilio_auth_token')
     def _compute_balance_twilio(self):
         for item in self:
             if not item.twilio_account_sid or not item.twilio_auth_token:
@@ -35,7 +37,6 @@ class ResCompany(models.Model):
             item.balance_account = "%s: %s" % (
                 balance.currency, balance.balance)
 
-    @api.multi
     def retrieve_phone_numbers(self):
         for item in self:
             if not item.twilio_account_sid or not item.twilio_auth_token:
